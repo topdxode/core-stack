@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  mysqldb:
+    image: mysql:8.0
+    container_name: core_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - core_volume_mysql:/var/lib/mysql
+    networks:
+      - core_network_mysql
+
+  phpmyadmin:
+    depends_on:
+      - mysqldb
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: core_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysqldb
+      PMA_PORT: 3306
+    ports:
+      - "5051:80"
+    networks:
+      - core_network_mysql
+
+volumes:
+  core_volume_mysql:
+    name: core_volume_mysql
+    driver: local
+
+networks:
+  core_network_mysql:
+    name: core_network
+    driver: bridge

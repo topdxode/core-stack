@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: core_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - core_volume_postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - core_network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: core_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - core_network
+
+volumes:
+  core_volume_postgres:
+    name: core_volume_postgres
+    driver: local
+
+networks:
+  core_network:
+    name: core_network
+    driver: bridge
