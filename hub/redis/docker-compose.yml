@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: hub_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - hub_volume_redis:/data 
+    command: ["redis-server", "--appendonly", "yes"]
+
+volumes:
+  hub_volume_redis:
+    name: hub_volume_redis
+    driver: local
