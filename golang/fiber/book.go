@@ -27,7 +27,7 @@ func getBook(c *fiber.Ctx) error {
 
 func createBook(c *fiber.Ctx) error {
 	book := new(Book)
-	// NOTE: new(Book) สร้าง pointer ไปยัง struct Book (คือ *Book).
+	// ? new(Book) สร้าง pointer ไปยัง struct Book (คือ *Book).
 
 	if err := c.BodyParser(book); err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
@@ -68,8 +68,8 @@ func deleteBook(c *fiber.Ctx) error {
 	for i, book := range books {
 		if book.ID == bookId {
 			/*
-				NOTE: [1,2,3,4,5]
-				NOTE: [1,2] + [4,5] = [1,2,4,5]
+				? [1,2,3,4,5]
+				? [1,2] + [4,5] = [1,2,4,5]
 			*/
 			books = append(books[:i], books[i+1:]...)
 			return c.SendStatus(fiber.StatusNoContent)

@@ -50,14 +50,14 @@ func main() {
 
 	app := fiber.New()
 
-	// NOTE: Apply CORS middleware
+	// ? Apply CORS middleware
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*", // NOTE: Adjust this to be more restrictive if needed
+		AllowOrigins: "*", // ? Adjust this to be more restrictive if needed
 		AllowMethods: "GET,POST,HEAD,PUT,DELETE,PATCH",
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
-	// NOTE: Setup routes
+	// ? Setup routes
 	books = append(books, Book{ID: 1, Title: "1984", Author: "George Orwell"})
 	books = append(books, Book{ID: 2, Title: "The Great Gatsby", Author: "F. Scott Fitzgerald"})
 
@@ -65,7 +65,7 @@ func main() {
 
 	app.Use(logMiddleware)
 
-	// NOTE: JWT Middleware
+	// ? JWT Middleware
 	app.Use(jwtware.New(jwtware.Config{
 		SigningKey: []byte(os.Getenv("JWT_SECRET")),
 	}))
@@ -82,10 +82,10 @@ func main() {
 
 	app.Post("/upload", uploadFile)
 
-	// NOTE: Use the environment variable for the port
+	// ? Use the environment variable for the port
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8081" // NOTE: Default port if not specified
+		port = "8081" // ? Default port if not specified
 	}
 
 	app.Listen(":" + port)
@@ -105,7 +105,7 @@ func uploadFile(c *fiber.Ctx) error {
 	return c.SendString("File uploaded successfully: " + file.Filename)
 }
 
-// NOTE: Dummy user for example
+// ? Dummy user for example
 type User struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -122,21 +122,21 @@ func login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 	}
 
-	// NOTE: Check credentials - In real world, you should check against a database
+	// ? Check credentials - In real world, you should check against a database
 	if memberUser.Email != user.Email || memberUser.Password != user.Password {
 		return fiber.ErrUnauthorized
 	}
 
-	// NOTE: Create token
+	// ? Create token
 	token := jwt.New(jwt.SigningMethodHS256)
 
-	// NOTE: Set claims
+	// ? Set claims
 	claims := token.Claims.(jwt.MapClaims)
 	claims["email"] = user.Email
 	claims["role"] = "admin"
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 
-	// NOTE: Generate encoded token
+	// ? Generate encoded token
 	t, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
@@ -149,7 +149,7 @@ func login(c *fiber.Ctx) error {
 }
 
 /*
-	IDEA: use case struct dubplicate struct
+	* use case struct dubplicate struct
 	type Author stuct {
 		Name 	string `json:"name"`
 		Country string `json:"country"`
@@ -165,7 +165,7 @@ func login(c *fiber.Ctx) error {
 		BookDetails 	Book 	`json:"book`
 	}
 
-	NOTE: body example =>
+	? body example =>
 	{
 		"author": {
 			"name": "George",
@@ -179,7 +179,7 @@ func login(c *fiber.Ctx) error {
 */
 
 /*
-	IDEA: Template with Fiber (email, pdf)
+	* Template with Fiber (email, pdf)
 	package main
 
 	import (
@@ -188,28 +188,28 @@ func login(c *fiber.Ctx) error {
 	)
 
 	func main() {
-		NOTE: Initialize standard Go html template engine
+		? Initialize standard Go html template engine
 		engine := html.New("./views", ".html")
 
-		NOTE: Pass the engine to Fiber
+		? Pass the engine to Fiber
 		app := fiber.New(fiber.Config{
 			Views: engine,
 		})
 
-		NOTE: Setup route
+		? Setup route
 		app.Get("/", renderTemplate)
 
 		app.Listen(":8080")
 	}
 
 	func renderTemplate(c *fiber.Ctx) error {
-		NOTE: Render the template with variable data
+		? Render the template with variable data
 		return c.Render("template", fiber.Map{
 			"Name": "World",
 		})
 	}
 
-	NOTE: views/template.html
+	? views/template.html
 	<!DOCTYPE html>
 	<html>
 	<head>
